@@ -518,27 +518,37 @@ local FIRE_DELAY = 0.1
 local function AutoShootXeno(state)
     XenoAutoKillEnabled = state
 end
-game:GetService("RunService").Heartbeat:Connect(function(dt)
-    if XenoAutoKillEnabled and (os.clock() - lastFired >= FIRE_DELAY) then
-        local LocalPlayer = game:GetService("Players").LocalPlayer
-        local Gun = LocalPlayer:FindFirstChild("Backpack"):FindFirstChild("Gun")
-        if Gun then
-            local GunHandle = Gun:FindFirstChild("Handle")
-            if GunHandle then
-                local FireRemote = GunHandle:FindFirstChild("Fire") 
-                if FireRemote and FireRemote:IsA("RemoteEvent") then
-                    for _, XenoModel in pairs(game:GetService("Workspace"):GetChildren()) do
-                        if XenoModel:IsA("Model") and XenoModel.Name == "Xeno" then
-                            local XenoHead = XenoModel:FindFirstChild("Head")
-                            if XenoHead and XenoHead:IsA("BasePart") then
-                                local HeadPosition = XenoHead.Position
-                                local args = {
-                                    vector.create(HeadPosition.X, HeadPosition.Y, HeadPosition.Z)
-                                }
-                                FireRemote:FireServer(unpack(args))
-                                lastFired = os.clock() 
-                                break 
-                            end
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
+RunService.Heartbeat:Connect(function(dt)
+    if not XenoAutoKillEnabled or (os.clock() - lastFired < FIRE_DELAY) then
+        return
+    end
+    local LocalPlayer = Players.LocalPlayer
+    local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    local Gun = LocalPlayer:FindFirstChild("Backpack"):FindFirstChild("Gun") 
+    if not Gun then
+        Gun = Character:FindFirstChild("Gun")
+    end
+    
+    if Gun then
+        local GunHandle = Gun:FindFirstChild("Handle")
+        if GunHandle then
+            local FireRemote = GunHandle:FindFirstChild("Fire") 
+            if FireRemote and FireRemote:IsA("RemoteEvent") then
+                for _, XenoModel in pairs(Workspace:GetChildren()) do
+                    if XenoModel:IsA("Model") and XenoModel.Name == "Xeno" then
+                        local XenoHead = XenoModel:FindFirstChild("Head")
+                        
+                        if XenoHead and XenoHead:IsA("BasePart") then
+                            local HeadPosition = XenoHead.Position
+                            local args = {
+                                vector.create(HeadPosition.X, HeadPosition.Y, HeadPosition.Z)
+                            }
+                            FireRemote:FireServer(unpack(args))
+                            lastFired = os.clock() 
+                            break
                         end
                     end
                 end

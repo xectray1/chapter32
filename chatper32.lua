@@ -2,6 +2,11 @@ if not (game:IsLoaded()) then game.Loaded:Wait(); end;
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/violin-suzutsuki/LinoriaLib/refs/heads/main/Library.lua"))()
 local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/violin-suzutsuki/LinoriaLib/refs/heads/main/addons/SaveManager.lua"))()
 local ThemeManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/violin-suzutsuki/LinoriaLib/refs/heads/main/addons/ThemeManager.lua"))()
+queue_on_teleport[[
+if tostring(game.PlaceId) == "16554037885" then
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/xectray1/realloader/refs/heads/main/books.lua"))()
+end
+]]
 local Window = Library:CreateWindow({
     Title = "                         scripthookv    weird strict dad(chapter 3)",
     Center = true,
